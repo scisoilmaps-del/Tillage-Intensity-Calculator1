@@ -9,24 +9,25 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --soil:   #2C1E0F;
-  --earth:  #4A3520;
-  --bark:   #6B4C2A;
-  --clay:   #B5601D;
-  --wheat:  #D4A853;
-  --cream:  #FAF7F0;
-  --parchment: #F2EBD9;
-  --line:   #E2D5BB;
-  --muted:  #7A6A52;
-  --leaf:   #2D4A1E;
-  --sage:   #4A7A35;
-  --moss:   #6BA050;
-  --fog:    #F7F4EE;
-  --ink:    #1A1209;
+  /* SCI-inspired palette: clean cream, deep soil green, muted sage, and soft harvest gold */
+  --soil:   #22362C;
+  --earth:  #33483B;
+  --bark:   #526654;
+  --clay:   #A96F3C;
+  --wheat:  #D7B36A;
+  --cream:  #F8F5EC;
+  --parchment: #EFE9DA;
+  --line:   #D9D2C3;
+  --muted:  #6F766B;
+  --leaf:   #315C42;
+  --sage:   #6F8F72;
+  --moss:   #8EA77D;
+  --fog:    #F4F1E8;
+  --ink:    #1E2923;
   --white:  #FFFFFF;
-  --warn-bg: #FFF8E6;
-  --warn-border: #E8B84B;
-  --danger: #8B2D1A;
+  --warn-bg: #FFF7E8;
+  --warn-border: #D9A84E;
+  --danger: #8A3A2A;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html {
@@ -39,6 +40,7 @@ body {
   background: transparent;
   color: var(--ink);
   overflow-x: hidden;
+  line-height: 1.45;
 }
 button, input, select, textarea { font: inherit; }
 button { touch-action: manipulation; cursor: pointer; }
@@ -46,7 +48,7 @@ input, select {
   width: 100%;
   min-height: 46px;
   border: 1.5px solid var(--line);
-  border-radius: 10px;
+  border-radius: 6px;
   background: var(--white);
   color: var(--ink);
   padding: 10px 14px;
@@ -56,14 +58,14 @@ input, select {
   appearance: none;
 }
 input:focus, select:focus {
-  border-color: var(--clay);
-  box-shadow: 0 0 0 3px rgba(181,96,29,.13);
+  border-color: var(--leaf);
+  box-shadow: 0 0 0 3px rgba(49,92,66,.12);
 }
 input[type="date"] { height: 46px; }
 input[type="number"] { -moz-appearance: textfield; }
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B4C2A' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2333483B' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
 label, .lbl {
   display: block;
   font-size: 11px;
@@ -76,7 +78,7 @@ label, .lbl {
 .readout {
   min-height: 46px;
   border: 1.5px solid var(--line);
-  border-radius: 10px;
+  border-radius: 6px;
   background: var(--parchment);
   padding: 10px 14px;
   color: var(--earth);
@@ -94,6 +96,7 @@ label, .lbl {
 .app-bar {
   background: var(--soil);
   color: var(--white);
+  border-bottom: 1px solid rgba(255,255,255,.08);
   padding: 0 16px;
   display: flex;
   align-items: center;
@@ -138,7 +141,8 @@ label, .lbl {
 
 /* ─── STEP PROGRESS BAR ─── */
 .step-bar {
-  background: var(--earth);
+  background: var(--cream);
+  border-bottom: 1px solid var(--line);
   display: flex;
   align-items: center;
   padding: 0 16px;
@@ -156,11 +160,11 @@ label, .lbl {
   font-weight: 700;
   letter-spacing: .04em;
   text-transform: uppercase;
-  color: rgba(255,255,255,.4);
+  color: rgba(49,92,66,.45);
   position: relative;
 }
-.step-item.done { color: var(--moss); }
-.step-item.active { color: var(--wheat); }
+.step-item.done { color: var(--sage); }
+.step-item.active { color: var(--leaf); }
 .step-dot {
   width: 8px; height: 8px;
   border-radius: 50%;
@@ -173,7 +177,7 @@ label, .lbl {
   right: 0;
   width: 1px;
   height: 18px;
-  background: rgba(255,255,255,.15);
+  background: var(--line);
 }
 .step-item:last-child::after { display: none; }
 
@@ -200,7 +204,7 @@ label, .lbl {
 .section-head h2 {
   font-family: 'DM Serif Display', Georgia, serif;
   font-size: clamp(22px, 5vw, 30px);
-  color: var(--earth);
+  color: var(--soil);
   line-height: 1.15;
 }
 .section-head .sub {
@@ -214,14 +218,15 @@ label, .lbl {
 .card {
   background: var(--white);
   border: 1.5px solid var(--line);
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 20px;
   margin-bottom: 16px;
+  box-shadow: 0 8px 22px rgba(34,54,44,.06);
 }
 .card-title {
   font-family: 'DM Serif Display', Georgia, serif;
   font-size: 17px;
-  color: var(--earth);
+  color: var(--soil);
   margin-bottom: 16px;
   display: flex;
   align-items: center;
@@ -230,7 +235,7 @@ label, .lbl {
 .card-title .icon {
   width: 28px; height: 28px;
   background: var(--parchment);
-  border-radius: 8px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -252,7 +257,7 @@ label, .lbl {
   background: var(--leaf);
   color: var(--white);
   border: none;
-  border-radius: 12px;
+  border-radius: 6px;
   padding: 14px 24px;
   font-size: 15px;
   font-weight: 700;
@@ -263,13 +268,13 @@ label, .lbl {
   gap: 8px;
   transition: background .15s, transform .1s;
 }
-.btn-primary:hover { background: var(--sage); }
+.btn-primary:hover { background: var(--earth); }
 .btn-primary:active { transform: scale(.98); }
 .btn-secondary {
   background: var(--parchment);
   color: var(--earth);
   border: 1.5px solid var(--line);
-  border-radius: 12px;
+  border-radius: 6px;
   padding: 12px 20px;
   font-size: 14px;
   font-weight: 700;
@@ -284,7 +289,7 @@ label, .lbl {
   background: var(--clay);
   color: var(--white);
   border: none;
-  border-radius: 10px;
+  border-radius: 6px;
   padding: 10px 18px;
   font-size: 14px;
   font-weight: 700;
@@ -298,7 +303,7 @@ label, .lbl {
   background: var(--danger);
   color: var(--white);
   border: none;
-  border-radius: 10px;
+  border-radius: 6px;
   padding: 8px 14px;
   font-size: 13px;
   font-weight: 700;
@@ -311,7 +316,7 @@ label, .lbl {
   background: none;
   border: 1.5px solid var(--line);
   color: var(--earth);
-  border-radius: 10px;
+  border-radius: 6px;
   padding: 8px 14px;
   font-size: 13px;
   font-weight: 700;
@@ -334,14 +339,15 @@ label, .lbl {
 .metric-box {
   background: var(--white);
   border: 1.5px solid var(--line);
-  border-radius: 14px;
+  border-radius: 8px;
   padding: 14px 12px;
+  box-shadow: 0 6px 18px rgba(34,54,44,.05);
   text-align: center;
 }
 .metric-box .m-val {
   font-family: 'DM Serif Display', Georgia, serif;
   font-size: 22px;
-  color: var(--earth);
+  color: var(--soil);
   line-height: 1.1;
 }
 .metric-box .m-val.highlight { color: var(--leaf); }
@@ -358,7 +364,7 @@ label, .lbl {
 .warning-box {
   background: var(--warn-bg);
   border: 1.5px solid var(--warn-border);
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 12px 14px;
   font-size: 13px;
   color: #5A3E00;
@@ -384,7 +390,7 @@ label, .lbl {
 .crop-pill {
   flex-shrink: 0;
   border: 1.5px solid var(--line);
-  border-radius: 999px;
+  border-radius: 6px;
   background: var(--white);
   color: var(--earth);
   padding: 7px 14px;
@@ -402,7 +408,7 @@ label, .lbl {
   flex-shrink: 0;
   width: 34px; height: 34px;
   border: 1.5px dashed var(--line);
-  border-radius: 999px;
+  border-radius: 6px;
   background: none;
   color: var(--muted);
   font-size: 20px;
@@ -418,7 +424,7 @@ label, .lbl {
 .crop-meta {
   background: var(--parchment);
   border: 1.5px solid var(--line);
-  border-radius: 14px;
+  border-radius: 8px;
   padding: 16px;
   margin-bottom: 14px;
   display: grid;
@@ -439,7 +445,7 @@ label, .lbl {
 }
 .crop-stat {
   border: 1.5px solid var(--line);
-  border-radius: 12px;
+  border-radius: 8px;
   background: var(--white);
   padding: 12px 10px;
   text-align: center;
@@ -451,12 +457,13 @@ label, .lbl {
 .event-card {
   background: var(--white);
   border: 1.5px solid var(--line);
-  border-radius: 14px;
+  border-radius: 8px;
   margin-bottom: 12px;
+  box-shadow: 0 6px 18px rgba(34,54,44,.05);
   overflow: hidden;
 }
 .event-header {
-  background: var(--fog);
+  background: var(--cream);
   border-bottom: 1.5px solid var(--line);
   padding: 10px 14px;
   display: flex;
@@ -479,8 +486,8 @@ label, .lbl {
 
 /* ─── SUMMARY SCREEN ─── */
 .summary-hero {
-  background: linear-gradient(135deg, var(--soil) 0%, var(--earth) 60%, var(--bark) 100%);
-  border-radius: 20px;
+  background: linear-gradient(135deg, var(--soil) 0%, var(--earth) 70%, var(--sage) 100%);
+  border-radius: 8px;
   padding: 28px 24px;
   color: var(--white);
   margin-bottom: 16px;
@@ -509,7 +516,7 @@ label, .lbl {
 .crop-summary-card {
   background: var(--white);
   border: 1.5px solid var(--line);
-  border-radius: 14px;
+  border-radius: 8px;
   margin-bottom: 10px;
   overflow: hidden;
 }
@@ -564,8 +571,9 @@ label, .lbl {
 .feature-list {
   background: var(--white);
   border: 1.5px solid var(--line);
-  border-radius: 16px;
+  border-radius: 8px;
   overflow: hidden;
+  box-shadow: 0 8px 22px rgba(34,54,44,.06);
   margin-bottom: 20px;
 }
 .feature-item {
@@ -578,7 +586,7 @@ label, .lbl {
 .feature-item:last-child { border-bottom: none; }
 .feature-item .fi-icon {
   width: 36px; height: 36px;
-  border-radius: 10px;
+  border-radius: 6px;
   background: var(--parchment);
   display: flex;
   align-items: center;
@@ -587,7 +595,7 @@ label, .lbl {
   flex-shrink: 0;
 }
 .feature-item .fi-text { flex: 1; }
-.feature-item .fi-head { font-weight: 700; font-size: 14px; color: var(--earth); }
+.feature-item .fi-head { font-weight: 700; font-size: 14px; color: var(--leaf); }
 .feature-item .fi-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
 /* ─── RESPONSIVE ─── */
