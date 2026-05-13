@@ -481,6 +481,135 @@ td input, td select {
   .page { padding: 6px; }
 }
 
+
+/* Crop page navigation: keeps each crop on its own clean iframe page */
+.crop-page-shell {
+  background: #fff;
+  border: 1px solid var(--sci-line);
+  border-radius: 14px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.crop-page-top {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.crop-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
+.crop-tab {
+  border: 1px solid var(--sci-line);
+  background: #fff;
+  color: var(--sci-earth);
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.crop-tab.active {
+  background: var(--sci-leaf-deep);
+  border-color: var(--sci-leaf-deep);
+  color: #fff;
+}
+.crop-page-controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  white-space: nowrap;
+}
+.crop-page-count {
+  color: var(--sci-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+.crop-card {
+  display: none;
+}
+.crop-card.active-crop {
+  display: block;
+}
+.crop-card {
+  padding: 0;
+}
+.crop-head {
+  border-radius: 13px 13px 0 0;
+}
+.compact-summary {
+  padding: 7px 9px;
+}
+.compact-summary .card-title {
+  margin-bottom: 6px;
+}
+.compact-summary h2 {
+  font-size: 14px;
+}
+.compact-summary .help {
+  display: none;
+}
+.compact-summary .summary-grid {
+  grid-template-columns: repeat(4, minmax(92px, 1fr));
+  gap: 5px;
+  margin-top: 6px !important;
+}
+.compact-summary .metric {
+  padding: 6px 7px;
+  border-radius: 9px;
+}
+.compact-summary .metric .label {
+  font-size: 8.5px;
+  margin-bottom: 1px;
+}
+.compact-summary .metric .value {
+  font-size: 14px;
+  line-height: 1.1;
+}
+.compact-summary .metric .small {
+  display: none;
+}
+.crop-mini-summary {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-top: 6px;
+  margin-top: 6px;
+  border-top: 1px dashed var(--sci-line);
+}
+.crop-mini-pill {
+  border: 1px solid var(--sci-line);
+  border-radius: 999px;
+  padding: 5px 8px;
+  background: #fff;
+  color: var(--sci-earth);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.crop-mini-pill b {
+  color: var(--sci-leaf-deep);
+}
+#cropGTIRTiles {
+  display: none;
+}
+.crop-summary-label {
+  display: none;
+}
+@media (max-width: 760px) {
+  .crop-page-top { grid-template-columns: 1fr; }
+  .crop-page-controls { justify-content: space-between; }
+  .compact-summary .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 480px) {
+  .compact-summary .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 </style>
 </head>
 <body>
@@ -512,10 +641,20 @@ td input, td select {
       <div class="metric"><div class="label">Farm Avg GTIR</div><div class="value" id="farmAvgGTIR">0.00</div><div class="small">Weighted by crop acres</div></div>
       <div class="metric"><div class="label">Tillage Events</div><div class="value" id="eventCount">0</div><div class="small">Across all crops</div></div>
     </div>
-    <div style="margin-top:10px"><div class="label" style="margin-bottom:6px">GTIR Per Crop</div><div class="summary-grid" id="cropGTIRTiles"></div></div>
+    <div class="crop-mini-summary" id="cropMiniSummary"></div><div><div class="label crop-summary-label">GTIR Per Crop</div><div class="summary-grid" id="cropGTIRTiles"></div></div>
   </section>
 
-  <main id="crops"></main>
+  <section class="crop-page-shell">
+    <div class="crop-page-top">
+      <div class="crop-tabs" id="cropTabs" aria-label="Crop pages"></div>
+      <div class="crop-page-controls">
+        <button class="btn ghost" id="prevCropBtn" type="button">Previous</button>
+        <span class="crop-page-count" id="cropPageCount">Crop 1 of 1</span>
+        <button class="btn ghost" id="nextCropBtn" type="button">Next</button>
+      </div>
+    </div>
+    <main id="crops"></main>
+  </section>
 
 </div>
 
@@ -584,11 +723,48 @@ const TILLAGE_RATINGS = [
 ];
 const MAX_CROPS = 10;
 let cropCounter = 0;
+let activeCropIndex = 0;
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 const num = v => Number.isFinite(parseFloat(v)) ? parseFloat(v) : 0;
 const fmt = (n, d = 2) => Number.isFinite(n) ? n.toFixed(d) : (0).toFixed(d);
+
+
+function getCropCards() {
+  return $$('.crop-card');
+}
+
+function setActiveCrop(index) {
+  const crops = getCropCards();
+  if (!crops.length) {
+    activeCropIndex = 0;
+    return;
+  }
+  activeCropIndex = Math.max(0, Math.min(index, crops.length - 1));
+  crops.forEach((crop, i) => crop.classList.toggle('active-crop', i === activeCropIndex));
+  renderCropNavigation();
+}
+
+function renderCropNavigation() {
+  const crops = getCropCards();
+  const tabs = $('#cropTabs');
+  const pageCount = $('#cropPageCount');
+  if (!tabs || !pageCount) return;
+  tabs.innerHTML = '';
+  crops.forEach((crop, index) => {
+    const name = $('.crop-name', crop)?.value.trim() || `Crop ${index + 1}`;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `crop-tab${index === activeCropIndex ? ' active' : ''}`;
+    btn.textContent = name;
+    btn.addEventListener('click', () => setActiveCrop(index));
+    tabs.appendChild(btn);
+  });
+  pageCount.textContent = crops.length ? `Crop ${activeCropIndex + 1} of ${crops.length}` : 'No crops';
+  $('#prevCropBtn').disabled = activeCropIndex <= 0;
+  $('#nextCropBtn').disabled = activeCropIndex >= crops.length - 1;
+}
 
 function createEventRow() {
   const row = $('#eventTemplate').content.firstElementChild.cloneNode(true);
@@ -636,6 +812,7 @@ function syncCropCardsToCount() {
     const all = $$('.crop-card');
     all[all.length - 1].remove();
   }
+  setActiveCrop(Math.min(activeCropIndex, $$('.crop-card').length - 1));
   calculateAll();
 }
 
@@ -652,15 +829,19 @@ function addCrop(name = '', acres = '') {
     calculateAll();
   });
   $('.remove-crop', crop).addEventListener('click', () => {
+    const removedIndex = $$('.crop-card').indexOf(crop);
     crop.remove();
     $('#cropCount').value = String(Math.max(1, $$('.crop-card').length));
+    setActiveCrop(Math.min(removedIndex, $$('.crop-card').length - 1));
     calculateAll();
   });
   crop.addEventListener('input', calculateAll);
   crop.addEventListener('change', calculateAll);
   $('#crops').appendChild(crop);
+  setActiveCrop($$('.crop-card').length - 1);
   calculateAll();
 }
+
 
 function getEventData(crop, row) {
   const cropName = $('.crop-name', crop).value.trim();
@@ -687,6 +868,8 @@ function getEventData(crop, row) {
 
 function calculateAll() {
   const crops = $$('.crop-card');
+  if (activeCropIndex >= crops.length) activeCropIndex = Math.max(0, crops.length - 1);
+  crops.forEach((crop, i) => crop.classList.toggle('active-crop', i === activeCropIndex));
   let sumCropAcres = 0;
   let totalEvents = 0;
   let weightedGTIR = 0;
@@ -749,6 +932,26 @@ function calculateAll() {
     $('.small', tile).textContent = `${fmt(cropAcres)} acres • Total GTIR ${cropTotal} • ${events} events`;
     tiles.appendChild(tile);
   });
+
+  const mini = $('#cropMiniSummary');
+  if (mini) {
+    mini.innerHTML = '';
+    crops.forEach((crop, index) => {
+      const cropName = $('.crop-name', crop).value.trim() || `Crop ${index + 1}`;
+      const cropAvg = $('.crop-avg', crop).textContent;
+      const pill = document.createElement('div');
+      pill.className = 'crop-mini-pill';
+      pill.innerHTML = '';
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = `${cropName}: `;
+      const val = document.createElement('b');
+      val.textContent = cropAvg;
+      pill.appendChild(nameSpan);
+      pill.appendChild(val);
+      mini.appendChild(pill);
+    });
+  }
+  renderCropNavigation();
 
   const warn = $('#acreWarning');
   if (totalAcres > 0 && Math.abs(remaining) > 0.01) {
@@ -864,6 +1067,8 @@ $('#addCropBtn').addEventListener('click', () => {
   }
 });
 $('#exportCsvBtn').addEventListener('click', downloadCsv);
+$('#prevCropBtn').addEventListener('click', () => setActiveCrop(activeCropIndex - 1));
+$('#nextCropBtn').addEventListener('click', () => setActiveCrop(activeCropIndex + 1));
 ['farmName','totalAcres','preparedBy'].forEach(id => document.getElementById(id).addEventListener('input', calculateAll));
 document.getElementById('cropCount').addEventListener('input', syncCropCardsToCount);
 document.getElementById('cropCount').addEventListener('change', syncCropCardsToCount);
