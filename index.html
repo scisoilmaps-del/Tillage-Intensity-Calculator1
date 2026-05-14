@@ -621,6 +621,60 @@ label, .lbl {
   .event-body .full { grid-column: 1 / -1; }
   .event-body .span-3 { grid-column: span 2; }
 }
+
+/* ─── PHONE-FIRST MINIMAL UI OVERRIDES ─── */
+.micro-help { font-size: 12px; color: var(--muted); margin-top: -4px; }
+#screen-crops .metrics-strip, .crop-stats-strip { display: none !important; }
+#screen-crops .content-wide { max-width: 720px; padding-top: 10px; }
+.crop-meta { padding: 10px; margin-bottom: 8px; gap: 8px; grid-template-columns: minmax(0,1.35fr) minmax(88px,.65fr) auto; align-items:end; background: var(--white); }
+.crop-meta .crop-remove-btn { grid-column: auto; }
+.crop-meta .btn-danger { min-height: 42px; padding: 9px 10px; font-size: 0; justify-content: center; }
+.crop-meta .btn-danger::before { content: "✕"; font-size: 14px; }
+.crop-card { margin-bottom: 12px; }
+.event-card { margin-bottom: 8px; }
+.event-header { padding: 8px 10px; gap: 8px; }
+.event-header .e-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.event-status { font-size: 10px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); background: var(--fog); border: 1px solid var(--line); border-radius: 999px; padding: 3px 7px; white-space: nowrap; }
+.event-card.complete .event-status { color: var(--leaf); background: rgba(49,92,66,.08); border-color: rgba(49,92,66,.22); }
+.event-card.started:not(.complete) .event-status { color: #7A4E0C; background: var(--warn-bg); border-color: var(--warn-border); }
+.event-card.collapsed .event-body { display: none; }
+.event-card.collapsed .edit-event { display: inline-flex !important; }
+.event-body { padding: 10px; gap: 8px; }
+.event-body .field:has(.rating), .event-body .field:has(.depth-cm), .event-body .field:has(.acres-tilled) { display:none; }
+.event-body .field:has(.gtir) { grid-column: 1 / -1; }
+.event-body .readout.gtir { justify-content: center; min-height: 38px; font-size: 16px !important; }
+.event-row.needs-attention { border-color: var(--warn-border); box-shadow: 0 0 0 3px rgba(217,168,78,.14); }
+#cropQa { margin-bottom: 8px; }
+#cropQa .w-icon { color: var(--leaf); }
+@media (max-width: 600px) {
+  html { font-size: 14px; }
+  .app-bar { height: 48px; padding: 0 10px; }
+  .step-bar { height: 26px; }
+  .content, .content-wide, .home-content { padding: 10px 10px 22px; }
+  .section-head { margin-bottom: 8px; }
+  .section-head h2 { font-size: 20px; }
+  .section-head .sub { font-size: 12px; margin-top: 2px; }
+  .card { padding: 10px; margin-bottom: 8px; box-shadow: none; }
+  .card-title { font-size: 15px; margin-bottom: 8px; }
+  .card-title .icon { width: 24px; height: 24px; }
+  label, .lbl { font-size: 10px; margin-bottom: 3px; }
+  input, select { min-height: 42px; padding: 8px 10px; border-radius: 6px; }
+  .form-grid { gap: 8px; }
+  .btn-primary { padding: 12px 16px; }
+  .warning-box { padding: 8px 10px; font-size: 12px; margin-bottom: 8px; }
+  .crop-nav-wrap { position: sticky; top: 75px; z-index: 50; background: rgba(248,245,236,.96); padding: 6px 0; margin-bottom: 8px; }
+  .crop-pill { padding: 5px 10px; font-size: 11px; }
+  .crop-meta { grid-template-columns: minmax(0,1.25fr) minmax(78px,.75fr) 42px; padding: 8px; }
+  .event-body { grid-template-columns: 1fr 1fr; }
+  .event-body .field.span-3, .event-body .field.full, .event-body .field:has(.gtir) { grid-column: 1 / -1; }
+  .event-body .field:has(.implement), .event-body .field:has(.tillage-type) { grid-column: 1 / -1; }
+  .event-header .btn-danger, .event-header .btn-ghost { padding: 4px 8px !important; font-size: 11px !important; }
+}
+@media (max-width: 360px) {
+  .crop-meta { grid-template-columns: 1fr 74px 38px; }
+  .event-status { display:none; }
+}
+
 @media print {
   .app-bar, .step-bar, .btn-primary, .btn-secondary, .btn-clay, .btn-danger, .btn-ghost,
   .btn-row, .crop-pill-add, .crop-pill { display: none !important; }
@@ -628,6 +682,7 @@ label, .lbl {
   #screen-summary { display: block !important; }
   #screen-home, #screen-setup, #screen-crops { display: none !important; }
 }
+  .metrics-strip { display: none !important; }
 </style>
 </head>
 <body>
@@ -662,8 +717,8 @@ label, .lbl {
       <div class="feature-item">
         <div class="fi-icon">📥</div>
         <div class="fi-text">
-          <div class="fi-head">Export to CSV</div>
-          <div class="fi-sub">Download a full spreadsheet for your records</div>
+          <div class="fi-head">Export CSV</div>
+          <div class="fi-sub">Download a clean CSV file for records or manual sharing</div>
         </div>
       </div>
     </div>
@@ -686,35 +741,27 @@ label, .lbl {
   </div>
   <div class="content">
     <div class="section-head">
-      <h2>Tell us about your farm</h2>
-      <div class="sub">Enter your basic farm information to get started. You can always come back and change this.</div>
+      <h2>Farm setup</h2>
+      <div class="sub">Only the basics needed to start.</div>
     </div>
 
-    <div class="card">
-      <div class="card-title"><div class="icon">🏡</div> Farm Information</div>
+    <div class="card setup-compact-card">
+      <div class="card-title"><div class="icon">🏡</div> Basic Info</div>
       <div class="form-grid">
         <div class="field full">
           <label for="farmName">Farm Name</label>
-          <input id="farmName" placeholder="e.g. Rolling Hills Farm" oninput="calculateAll()" />
+          <input id="farmName" placeholder="ABC Farm" oninput="calculateAll()" />
         </div>
         <div class="field">
           <label for="totalAcres">Total Farm Acres</label>
           <input id="totalAcres" type="number" min="0" step="0.01" placeholder="0" inputmode="decimal" oninput="calculateAll()" />
         </div>
         <div class="field">
-          <label for="preparedBy">Prepared By</label>
-          <input id="preparedBy" placeholder="Optional" oninput="calculateAll()" />
+          <label for="cropCountInput">Number of Crops</label>
+          <input id="cropCountInput" type="number" min="1" max="10" step="1" placeholder="1" inputmode="numeric" oninput="syncCropCount()" onchange="syncCropCount()" />
         </div>
+        <input id="preparedBy" type="hidden" value="" />
       </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><div class="icon">🌾</div> Crop Count</div>
-      <div class="field" style="margin-bottom:16px;">
-        <label for="cropCountInput">How many different crops?</label>
-        <input id="cropCountInput" type="number" min="1" max="10" step="1" placeholder="1" inputmode="numeric" oninput="syncCropCount()" onchange="syncCropCount()" />
-      </div>
-      <p style="font-size:13px;color:var(--muted);">You can add up to 10 crops. You can also add or remove them from the crops screen.</p>
     </div>
 
     <button class="btn-primary" onclick="goToSetupCrops()">
@@ -763,6 +810,10 @@ label, .lbl {
       <span class="w-icon">⚠️</span>
       <span id="acreWarningText"></span>
     </div>
+    <div id="cropQa" class="warning-box hidden">
+      <span class="w-icon">→</span>
+      <span id="cropQaText"></span>
+    </div>
 
     <!-- Crop navigation pills -->
     <div class="crop-nav-wrap" id="cropNavPills"></div>
@@ -790,7 +841,7 @@ label, .lbl {
     <div id="summaryContent"></div>
     <div class="btn-row">
       <button class="btn-secondary" style="flex:1" onclick="goTo('crops')">← Edit Crops</button>
-      <button class="btn-clay" style="flex:1" onclick="downloadCsv()">📥 Export CSV</button>
+      <button class="btn-clay" style="flex:1" onclick="downloadCsv()">Export CSV</button>
     </div>
   </div>
 </div>
@@ -834,6 +885,8 @@ label, .lbl {
   <div class="event-card event-row">
     <div class="event-header">
       <span class="event-title e-title">Tillage Event</span>
+      <span class="event-status">Incomplete</span>
+      <button class="btn-ghost edit-event" type="button" style="padding:5px 10px;font-size:12px;display:none;">Edit</button>
       <button class="btn-danger remove-event" type="button" aria-label="Remove event" style="padding:5px 10px;font-size:12px;">✕</button>
     </div>
     <div class="event-body">
@@ -917,14 +970,22 @@ function goTo(name) {
 }
 
 function goToSetupCrops() {
+  if (!$('#cropCountInput').value.trim()) $('#cropCountInput').value = '1';
   syncCropCount();
   goTo('crops');
   updateCropsBar();
   calculateAll();
+  showCropQA('Enter crop name, crop acres, then add one tillage implement at a time. Completed implements will close automatically.');
 }
 
 function goToSummary() {
   calculateAll();
+  const check = validateJourney();
+  if (!check.ok) {
+    showCropQA(check.message);
+    if (check.el) check.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
   renderSummary();
   goTo('summary');
 }
@@ -968,9 +1029,19 @@ function addCrop(name = '', acres = '') {
   $('.event-list', card).appendChild(createEventRow());
 
   $('.add-event', card).addEventListener('click', () => {
-    $('.event-list', card).appendChild(createEventRow());
+    const blank = $$('.event-row', card).find(row => !eventStarted(row));
+    if (blank) {
+      openEvent(blank);
+      showCropQA('Use the open blank implement first, then add another.');
+      return;
+    }
+    collapseCompletedEvents(card);
+    const row = createEventRow();
+    $('.event-list', card).appendChild(row);
+    openEvent(row);
     refreshEventTitles(card);
     calculateAll();
+    showCropQA('New implement added. Fill the required boxes, then tap + Add Tillage Implement for the next one.');
   });
 
   $('.remove-crop', card).addEventListener('click', () => {
@@ -1031,6 +1102,56 @@ function renderCropNav() {
   wrap.appendChild(addBtn);
 }
 
+function showCropQA(message) {
+  const box = $('#cropQa');
+  const txt = $('#cropQaText');
+  if (!box || !txt) return;
+  if (!message) { box.classList.add('hidden'); txt.textContent = ''; return; }
+  txt.textContent = message;
+  box.classList.remove('hidden');
+}
+
+function eventStarted(row) {
+  return !!($('.tillage-date', row).value || $('.implement', row).value.trim() || $('.tillage-type', row).value || num($('.depth-in', row).value) > 0 || num($('.disturbed', row).value) > 0 || num($('.passes', row).value) > 0 || $('.notes', row).value.trim());
+}
+
+function collapseCompletedEvents(crop) {
+  $$('.event-row', crop).forEach(row => {
+    const e = getEventData(crop, row);
+    if (e.isComplete) row.classList.add('collapsed');
+  });
+}
+
+function openEvent(row) {
+  row.classList.remove('collapsed');
+  setTimeout(() => $('.implement', row)?.focus(), 20);
+}
+
+function validateJourney() {
+  const crops = $$('.crop-card');
+  if (!crops.length) return { ok:false, message:'Add at least one crop before continuing.', el:$('#cropNavPills') };
+  let completeEvents = 0;
+  for (const [ci, crop] of crops.entries()) {
+    const name = $('.crop-name', crop).value.trim();
+    const acres = num($('.crop-acres', crop).value);
+    if (!name) { setActiveCrop(ci); return { ok:false, message:'Add a crop name before viewing the summary.', el:$('.crop-name', crop) }; }
+    if (acres <= 0) { setActiveCrop(ci); return { ok:false, message:`Add acres for ${name}.`, el:$('.crop-acres', crop) }; }
+    for (const row of $$('.event-row', crop)) {
+      const e = getEventData(crop, row);
+      row.classList.remove('needs-attention');
+      if (e.isComplete) completeEvents++;
+      else if (eventStarted(row)) {
+        setActiveCrop(ci);
+        row.classList.add('needs-attention');
+        openEvent(row);
+        return { ok:false, message:`Finish the incomplete tillage implement for ${name}: implement, type, depth, % disturbed, and passes are required.`, el:row };
+      }
+    }
+  }
+  if (!completeEvents) return { ok:false, message:'Add at least one complete tillage implement before viewing the summary.', el:$('#cropCardsContainer') };
+  return { ok:true, message:'' };
+}
+
 function refreshEventTitles(crop) {
   $$('.event-row', crop).forEach((row, i) => {
     const impl = $('.implement', row).value.trim();
@@ -1049,8 +1170,13 @@ function createEventRow() {
     opt.dataset.label = item.label;
     sel.appendChild(opt);
   });
-  row.addEventListener('input', calculateAll);
-  row.addEventListener('change', calculateAll);
+  row.addEventListener('input', () => { row.classList.remove('needs-attention'); showCropQA(''); calculateAll(); });
+  row.addEventListener('change', () => { row.classList.remove('needs-attention'); showCropQA(''); calculateAll(); });
+  $('.edit-event', row).addEventListener('click', (ev) => { ev.stopPropagation(); openEvent(row); });
+  $('.event-header', row).addEventListener('click', (ev) => {
+    if (ev.target.closest('button')) return;
+    row.classList.toggle('collapsed');
+  });
   $('.remove-event', row).addEventListener('click', () => {
     const crop = row.closest('.crop-card');
     const list = row.closest('.event-list');
@@ -1111,6 +1237,10 @@ function calculateAll() {
       $('.depth-cm', row).textContent = fmt(e.depthCm, 2);
       $('.acres-tilled', row).textContent = fmt(e.acresTilled, 2);
       $('.gtir', row).textContent = fmt(e.gtir, 2);
+      row.classList.toggle('complete', e.isComplete);
+      row.classList.toggle('started', eventStarted(row));
+      const status = $('.event-status', row);
+      if (status) status.textContent = e.isComplete ? 'Complete' : (eventStarted(row) ? 'Needs info' : 'Blank');
       if (e.isComplete) {
         cropGTIRTotal += e.gtir;
         cropEventCount++;
@@ -1295,6 +1425,7 @@ function downloadCsv() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
 
 // ─── INIT ────────────────────────────────────────────
 // Field starts blank — crops are created when user enters a number
