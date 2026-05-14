@@ -333,31 +333,31 @@ label, .lbl {
 .metrics-strip {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  margin-bottom: 16px;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 .metric-box {
   background: var(--white);
   border: 1.5px solid var(--line);
   border-radius: 8px;
-  padding: 14px 12px;
+  padding: 8px 10px;
   box-shadow: 0 6px 18px rgba(34,54,44,.05);
   text-align: center;
 }
 .metric-box .m-val {
   font-family: 'DM Serif Display', Georgia, serif;
-  font-size: 22px;
+  font-size: 18px;
   color: var(--soil);
-  line-height: 1.1;
+  line-height: 1;
 }
 .metric-box .m-val.highlight { color: var(--leaf); }
 .metric-box .m-lbl {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 /* ─── WARNING ─── */
@@ -380,8 +380,8 @@ label, .lbl {
 .crop-nav-wrap {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 6px;
+  margin-bottom: 10px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -393,8 +393,8 @@ label, .lbl {
   border-radius: 6px;
   background: var(--white);
   color: var(--earth);
-  padding: 7px 14px;
-  font-size: 13px;
+  padding: 5px 12px;
+  font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
   transition: all .15s;
@@ -406,12 +406,12 @@ label, .lbl {
 }
 .crop-pill-add {
   flex-shrink: 0;
-  width: 34px; height: 34px;
+  width: 28px; height: 28px;
   border: 1.5px dashed var(--line);
   border-radius: 6px;
   background: none;
   color: var(--muted);
-  font-size: 20px;
+  font-size: 17px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -441,17 +441,17 @@ label, .lbl {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 .crop-stat {
   border: 1.5px solid var(--line);
   border-radius: 8px;
   background: var(--white);
-  padding: 12px 10px;
+  padding: 7px 8px;
   text-align: center;
 }
-.crop-stat .sv { font-weight: 800; font-size: 16px; color: var(--leaf); }
-.crop-stat .sl { font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
+.crop-stat .sv { font-weight: 800; font-size: 14px; color: var(--leaf); line-height: 1; }
+.crop-stat .sl { font-size: 9px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
 
 /* ─── EVENT CARD ─── */
 .event-card {
